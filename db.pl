@@ -6,45 +6,45 @@ det(singular,det(a)) --> [a].
 
 det(plural,det(two)) --> [two].
 
-n(singular,n(woman))--> [woman].
-n(plural,n(women))--> [women].
+n(animate,singular,n(woman))--> [woman].
+n(animate,plural,n(women))--> [women].
 
-n(singular,n(man))--> [man].
-n(plural,n(men))--> [men].
+n(animate,singular,n(man))--> [man].
+n(animate,plural,n(men))--> [men].
 
-n(singular,n(apple))--> [apple].
-n(plural,n(apples))--> [apples].
+n(inanimate,singular,n(apple))--> [apple].
+n(inanimate,plural,n(apples))--> [apples].
 
-n(singular,n(room))--> [room].
-n(plural,n(rooms))--> [rooms].
+n(inanimate,singular,n(room))--> [room].
+n(inanimate,plural,n(rooms))--> [rooms].
 
-n(singular,n(chair))--> [chair].
-n(plural,n(chairs))--> [chairs].
+n(inanimate,singular,n(chair))--> [chair].
+n(inanimate,plural,n(chairs))--> [chairs].
 
-v(tv,first,singular,v(know))--> [know].
-v(tv,second,singular,v(know))--> [know].
-v(tv,third,singular,v(know))--> [know].
-v(tv,_,plural,v(knows))--> [knows].
+v(animate,tv,first,singular,v(know))--> [know].
+v(animate,tv,second,singular,v(know))--> [know].
+v(animate,tv,third,singular,v(know))--> [know].
+v(animate,tv,_,plural,v(knows))--> [knows].
 
-v(tv,first,singular,v(see))--> [see].
-v(tv,second,singular,v(see))--> [see].
-v(tv,third,singular,v(see))--> [see].
-v(tv,_,plural,v(sees))--> [sees].
+v(animate,tv,first,singular,v(see))--> [see].
+v(animate,tv,second,singular,v(see))--> [see].
+v(animate,tv,third,singular,v(see))--> [see].
+v(animate,tv,_,plural,v(sees))--> [sees].
 
-v(tv,first,singular,v(hire))--> [hire].
-v(tv,second,singular,v(hire))--> [hire].
-v(tv,third,singular,v(hire))--> [hire].
-v(tv,_,plural,v(hires))--> [hires].
+v(animate,tv,first,singular,v(hire))--> [hire].
+v(animate,tv,second,singular,v(hire))--> [hire].
+v(animate,tv,third,singular,v(hire))--> [hire].
+v(animate,tv,_,plural,v(hires))--> [hires].
 
-v(iv,first,singular,v(fall))--> [fall].
-v(iv,second,singular,v(fall))--> [fall].
-v(iv,third,singular,v(fall))--> [fall].
-v(iv,_,plural,v(falls))--> [falls].
+v(inanimate,iv,first,singular,v(fall))--> [fall].
+v(inanimate,iv,second,singular,v(fall))--> [fall].
+v(inanimate,iv,third,singular,v(fall))--> [fall].
+v(inanimate,iv,_,plural,v(falls))--> [falls].
 
-v(iv,first,singular,v(sleep))--> [sleep].
-v(iv,second,singular,v(sleep))--> [sleep].
-v(iv,third,singular,v(sleep))--> [sleep].
-v(iv,_,plural,v(sleeps))--> [sleeps].
+v(animate,iv,first,singular,v(sleep))--> [sleep].
+v(animate,iv,second,singular,v(sleep))--> [sleep].
+v(animate,iv,third,singular,v(sleep))--> [sleep].
+v(animate,iv,_,plural,v(sleeps))--> [sleeps].
 
 prep(prep(on))--> [on].
 
@@ -86,40 +86,44 @@ pro(third,singular,object,pro(it))--> [it].
 pro(third,singular,subject,pro(it))--> [it].
 
 %phrases:
-%A = obj/subj B = plural/single
+%A = obj/subj B = plural/single, C= animate
 
-np(_,B,_,np(Det,N))--> det(B,Det), nbar(B,N).
-np(_,B,_,np(Det,N,PP))--> det(B,Det), nbar(B,N), pp(PP).
+np(C,_,B,_,np(Det,N))--> det(B,Det), nbar(C,B,N).
+np(C,_,B,_,np(Det,N,PP))--> det(B,Det), nbar(C,B,N), pp(PP).
 
-np(first,B,A,np(Pro)) --> pro(first,B,A,Pro).
-np(second,B,A,np(Pro)) --> pro(second,B,A,Pro).
-np(third,B,A,np(Pro)) --> pro(third,B,A,Pro).
+np(_,first,B,A,np(Pro)) --> pro(first,B,A,Pro).
+np(_,second,B,A,np(Pro)) --> pro(second,B,A,Pro).
+np(_,third,B,A,np(Pro)) --> pro(third,B,A,Pro).
 
-vp(B,vp(V,NP))--> v(_,_,B,V), np(_,_,object,NP).
-vp(B,vp(V))--> v(_,_,B,V).
+vp(C,B,vp(V,NP))--> v(C,_,_,B,V), np(_,_,_,object,NP).
+vp(C,B,vp(V))--> v(C,_,_,B,V).
 
-nbar(B,nbar(N))--> n(B,N) | jp(B,N).
+nbar(C,B,nbar(N))--> n(C,B,N) | jp(B,N).
 
-jp(B,jp(J,N))--> adj(J), n(B,N).
+jp(B,jp(J,N))--> adj(J), n(_,B,N).
 jp(B,jp(J,JP))--> adj(J), jp(B,JP).
 
-pp(pp(P,NP))--> prep(P), np(_,_,_,NP).
+pp(pp(P,NP))--> prep(P), np(_,_,_,_,NP).
 
 %sentences:
 %
-%i do something to something
-s(s(NP,VP))--> np(first,singular,subject,NP), vp(singular,VP).
-%something does some things
-s(s(NP,VP))--> np(third,singular,subject,NP), vp(plural,VP).
-%some things do something
-s(s(NP,VP))--> np(third,plural,subject,NP), vp(singular,VP).
-%you does some things
-s(s(NP,VP))--> np(second,singular,subject,NP), vp(plural,VP).
-%you lot do something
-s(s(NP,VP))--> np(second,plural,subject,NP), vp(singular,VP).
+%inanimate:
+s(s(NP,VP))--> np(_,first,singular,subject,NP), vp(inanimate,singular,VP).
+s(s(NP,VP))--> np(_,third,singular,subject,NP), vp(inanimate,plural,VP).
+s(s(NP,VP))--> np(_,third,plural,subject,NP), vp(inanimate,singular,VP).
+s(s(NP,VP))--> np(_,second,singular,subject,NP), vp(inanimate,singular,VP).
+s(s(NP,VP))--> np(_,second,plural,subject,NP), vp(inanimate,singular,VP).
+
+%animate
+s(s(NP,VP))--> np(animate,first,singular,subject,NP), vp(_,singular,VP).
+s(s(NP,VP))--> np(animate,third,singular,subject,NP), vp(_,plural,VP).
+s(s(NP,VP))--> np(animate,third,plural,subject,NP), vp(_,singular,VP).
+s(s(NP,VP))--> np(animate,second,singular,subject,NP), vp(_,singular,VP).
+s(s(NP,VP))--> np(animate,second,plural,subject,NP), vp(_,singular,VP).
+
 /*
 ---------------------
-tests:
+tests: (animate testing at bottom)
 1
 ?- s(Tree,[the,woman,sees,the,apples],[]).
 Tree = s(np(det(the), nbar(n(woman))), vp(v(sees), np(det(the), nbar(n(apples))))) .
@@ -206,61 +210,35 @@ Tree = s(np(pro(she)), vp(v(knows), np(pro(her)))) .
 ?- s(Tree, [the, woman, on, two, chairs, in, a, room, sees, two, tall, young, men], []).
 Tree = s(np(det(the), nbar(n(woman)), pp(prep(on), np(det(two), nbar(n(chairs)), pp(prep(in), np(det(a), nbar(n(room))))))), vp(v(sees), np(det(two), nbar(jp(adj(tall), jp(adj(young), n(men)))))))
 
+-----------------------
+ANIMATE TESTS:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+1
+?- s(Tree,[the,woman,sees,the,apples],[]).
+Tree = s(np(det(the), nbar(n(woman))), vp(v(sees), np(det(the), nbar(n(apples))))) .
+2
+?- s(Tree,[a,woman,knows,him],[]).
+Tree = s(np(det(a), nbar(n(woman))), vp(v(knows), np(pro(him)))) .
+3
+?- s(Tree,[the,man,sleeps],[]).
+Tree = s(np(det(the), nbar(n(man))), vp(v(sleeps))) .
+4
+?- s(Tree,[the,room,sleeps],[]).
+false.
+5
+?- s(Tree,[the,apple,sees,the,chair],[]).
+false.
+6
+?- s(Tree,[the,rooms,know,the,man],[]).
+false.
+7
+?- s(Tree,[the,apple,falls],[]).
+Tree = s(np(det(the), nbar(n(apple))), vp(v(falls))) .
+8
+?- s(Tree,[the,man,falls],[]).
+Tree = s(np(det(the), nbar(n(man))), vp(v(falls))) .
 */
-%
-%
-%
-%
-%
 
-
-
-
-/*
-1.    the woman sees the apples
-2.    a woman knows him
-3.    *two woman hires a man
-4.    two women hire a man
-5.    she knows her
-6.    *she know the man
-7.    *us see the apple
-8.    we see  the apple
-9.    i know a short man
-10.   *he hires they
-11.   two apples fall
-12.   the apple falls
-13.   the apples fall
-14.   i sleep15.   you sleep
-16.   she sleeps17.   *he sleep
-18.   *them sleep19.   *a men sleep
-20.   *the tall woman sees the red
-21.   the young tall man knows the old short woman
-22.   *a man tall knows the short woman
-23.   a man on a chair sees a woman in a room
-24.   *a man on a chair sees a woman a room in
-25.   the tall young woman in a room on the chair in a room in the room sees the red apples under the chair.
-*/
 
 
 
